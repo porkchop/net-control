@@ -9,6 +9,7 @@ function App() {
   const [lists, setLists] = useState(() => JSON.parse(localStorage.getItem('lists')) || []);
   const [currentList, setCurrentList] = useState('');
   const [newList, setNewList] = useState('');
+  const [showUsers, setShowUsers] = useState(false);
 
   useEffect(() => {
       localStorage.setItem('users', JSON.stringify(users));
@@ -87,6 +88,10 @@ function App() {
       setCurrentList('');
   };
 
+  const toggleUsers = () => {
+      setShowUsers(!showUsers);
+  };
+
   return (
       <div>
           <input type="text" value={search} onChange={handleSearch} placeholder="Search by call sign..." />
@@ -99,6 +104,29 @@ function App() {
               <button type="button" onClick={handleDelete}>Delete User</button>
               <button type="button" onClick={handleAddToList} disabled={!currentList}>Add to List</button>
           </form>
+          <button onClick={toggleUsers}>{showUsers ? 'Hide' : 'Show'} Users</button>
+          {showUsers && (
+              <table>
+                  <thead>
+                      <tr>
+                          <th>Call Sign</th>
+                          <th>Name</th>
+                          <th>Location</th>
+                          <th>Notes</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      {users.map((user, index) => (
+                          <tr key={index}>
+                              <td>{user.callSign}</td>
+                              <td>{user.name}</td>
+                              <td>{user.location}</td>
+                              <td>{user.notes}</td>
+                          </tr>
+                      ))}
+                  </tbody>
+              </table>
+          )}
           <div>
               <select value={currentList} onChange={handleListChange}>
                   <option value="">Select a list...</option>
@@ -112,11 +140,11 @@ function App() {
                   <button type="submit">Create List</button>
               </form>
               {lists[currentList] && (
-                  <ul>
+                  <ol>
                       {lists[currentList].map((user, index) => (
                           <li key={index}>{user.callSign} - {user.name} - {user.location}</li>
                       ))}
-                  </ul>
+                  </ol>
               )}
           </div>
       </div>
