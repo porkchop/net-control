@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/porkchop/static/css/main.073c9b0a.css",
+    "main.js": "/porkchop/static/js/main.c23648fc.js",
+    "static/js/787.043c83a7.chunk.js": "/porkchop/static/js/787.043c83a7.chunk.js",
+    "index.html": "/porkchop/index.html",
+    "main.073c9b0a.css.map": "/porkchop/static/css/main.073c9b0a.css.map",
+    "main.c23648fc.js.map": "/porkchop/static/js/main.c23648fc.js.map",
+    "787.043c83a7.chunk.js.map": "/porkchop/static/js/787.043c83a7.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.073c9b0a.css",
+    "static/js/main.c23648fc.js"
+  ]
+}
