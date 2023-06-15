@@ -6,6 +6,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
+### `npm run deploy`
+
+Deploys the app to github pages: https://porkchop.github.io/net-control
+
 ### `npm start`
 
 Runs the app in the development mode.\
