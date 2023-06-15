@@ -60,8 +60,10 @@ function App() {
       event.preventDefault();
       const newLists = { ...lists };
       newLists[currentList] = newLists[currentList] || [];
-      newLists[currentList].push(form);
-      setLists(newLists);
+      if (!newLists[currentList].find((user) => user.callSign.toLowerCase() === form.callSign.toLowerCase())) {
+          newLists[currentList].push(form);
+          setLists(newLists);
+      }
   };
 
   const handleNewListChange = (event) => {
