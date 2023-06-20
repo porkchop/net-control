@@ -4,12 +4,12 @@ import ReactDOM from 'react-dom';
 
 function App() {
   const [users, setUsers] = useState(() => JSON.parse(localStorage.getItem('users')) || []);
-  const [search, setSearch] = useState('');
   const [form, setForm] = useState({ callSign: '', name: '', location: '', notes: '' });
   const [lists, setLists] = useState(() => JSON.parse(localStorage.getItem('lists')) || []);
   const [currentList, setCurrentList] = useState('');
   const [newList, setNewList] = useState('');
   const [showUsers, setShowUsers] = useState(false);
+  const [editMode, setEditMode] = useState(true);
 
   useEffect(() => {
       localStorage.setItem('users', JSON.stringify(users));
@@ -24,13 +24,12 @@ function App() {
       setForm(user || { callSign: '', name: '', location: '', notes: '' });
   };
 
-  const handleSearch = (event) => {
-      setSearch(event.target.value);
-      searchUser(event.target.value);
-  };
-
   const handleChange = (event) => {
-      setForm({ ...form, [event.target.name]: event.target.value });
+      if (editMode) {
+          setForm({ ...form, [event.target.name]: event.target.value });
+      } else {
+          searchUser(event.target.value);
+      }
   };
 
   const handleSubmit = (event) => {
@@ -38,7 +37,9 @@ function App() {
       const newUsers = [...users];
       const index = newUsers.findIndex((user) => user.callSign.toLowerCase() === form.callSign.toLowerCase());
       if (index > -1) {
-          newUsers[index] = form;
+          if (window.confirm('Are you sure you want to update this user?')) {
+              newUsers[index] = form;
+          }
       } else {
           newUsers.push(form);
       }
@@ -61,7 +62,7 @@ function App() {
       event.preventDefault();
       const newLists = { ...lists };
       newLists[currentList] = newLists[currentList] || [];
-      if (!newLists[currentList].find((user) => user.callSign.toLowerCase() === form.callSign.toLowerCase())) {
+      if (form.callSign && !newLists[currentList].find((user) => user.callSign.toLowerCase() === form.callSign.toLowerCase())) {
           newLists[currentList].push(form);
           setLists(newLists);
       }
@@ -92,17 +93,22 @@ function App() {
       setShowUsers(!showUsers);
   };
 
+  const toggleMode = () => {
+      setEditMode(!editMode);
+      setForm({ callSign: '', name: '', location: '', notes: '' });
+  };
+
   return (
       <div>
-          <input type="text" value={search} onChange={handleSearch} placeholder="Search by call sign..." />
+          <button onClick={toggleMode}>{editMode ? 'Switch to Search Mode' : 'Switch to Edit Mode'}</button>
           <form onSubmit={handleSubmit}>
               <input name="callSign" value={form.callSign} onChange={handleChange} placeholder="Call Sign" required />
               <input name="name" value={form.name} onChange={handleChange} placeholder="Name" />
               <input name="location" value={form.location} onChange={handleChange} placeholder="Location" />
               <input name="notes" value={form.notes} onChange={handleChange} placeholder="Notes" />
-              <button type="submit">Add / Update User</button>
+              <button type="submit">{editMode ? 'Add / Update User' : 'Search User'}</button>
               <button type="button" onClick={handleDelete}>Delete User</button>
-              <button type="button" onClick={handleAddToList} disabled={!currentList}>Add to List</button>
+              <button type="button" onClick={handleAddToList} disabled={!currentList || !form.callSign || users.findIndex((user) => user.callSign.toLowerCase() === form.callSign.toLowerCase()) === -1}>Add to List</button>
           </form>
           <button onClick={toggleUsers}>{showUsers ? 'Hide' : 'Show'} Users</button>
           {showUsers && (
