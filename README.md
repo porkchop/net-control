@@ -1,6 +1,14 @@
-# Getting Started with Create React App
+# Net Control
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## TODO
+* voice search
+* preload database from ric.ca
+* isolate search from editting more simply
+* UI styling
+* mobile ready
+* mobile appify
 
 ## Available Scripts
 
