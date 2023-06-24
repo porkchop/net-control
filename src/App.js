@@ -32,6 +32,10 @@ function App() {
   const handleSubmit = (event) => {
       event.preventDefault();
       if (!form.callSign) return;
+      const existingUser = users.find((user) => user.callSign.toLowerCase() === form.callSign.toLowerCase());
+      if (existingUser && !window.confirm('This user already exists. Do you want to overwrite this user?')) {
+          return;
+      }
       const newUser = { ...form };
       const newUsers = users.filter((user) => user.callSign.toLowerCase() !== form.callSign.toLowerCase());
       newUsers.push(newUser);
@@ -42,6 +46,9 @@ function App() {
   const handleDelete = (event) => {
       event.preventDefault();
       if (!form.callSign) return;
+      if (!window.confirm('Are you sure you want to delete this user?')) {
+          return;
+      }
       const newUsers = users.filter((user) => user.callSign.toLowerCase() !== form.callSign.toLowerCase());
       setUsers(newUsers);
       setForm({ callSign: '', name: '', location: '', notes: '' });
