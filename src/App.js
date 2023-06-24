@@ -100,6 +100,19 @@ function App() {
       setForm({ callSign: '', name: '', location: '', notes: '' });
   };
 
+  const [isListening, setIsListening] = useState(false);
+
+  const handleVoiceSearch = () => {
+      setIsListening(true);
+      const recognition = new window.webkitSpeechRecognition();
+      recognition.onresult = (event) => {
+        console.log(event);
+          setSearch(event.results[0][0].transcript);
+          setIsListening(false);
+      };
+      recognition.start();
+  };
+
   return (
       <div>
           <div>
@@ -107,6 +120,7 @@ function App() {
           </div>
           <div>
               <input value={search} onChange={handleSearch} placeholder="Search by Call Sign" />
+              <button disabled={isListening} onClick={handleVoiceSearch}>{isListening ? 'Listening...' : 'Voice Search'}</button>
           </div>
           <div>
               <form onSubmit={handleSubmit}>
