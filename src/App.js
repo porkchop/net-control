@@ -106,12 +106,53 @@ function App() {
       setIsListening(true);
       const recognition = new window.webkitSpeechRecognition();
       recognition.onresult = (event) => {
-        console.log(event);
-          setSearch(event.results[0][0].transcript);
+          const transcript = event.results[0][0].transcript;
+          console.log(transcript)
+          const callSign = convertTranscriptToCallSign(transcript);
+          setSearch(callSign);
+          handleSearch({ target: { value: callSign } });
           setIsListening(false);
       };
       recognition.start();
   };
+
+  const convertTranscriptToCallSign = (transcript) => {
+      const phoneticAlphabet = {
+          'alpha': 'A', 'bravo': 'B', 'charlie': 'C', 'delta': 'D',
+          'echo': 'E', 'foxtrot': 'F', 'golf': 'G', 'hotel': 'H',
+          'india': 'I', 'juliett': 'J', 'kilo': 'K', 'lima': 'L',
+          'mike': 'M', 'november': 'N', 'oscar': 'O', 'papa': 'P',
+          'quebec': 'Q', 'romeo': 'R', 'sierra': 'S', 'tango': 'T',
+          'uniform': 'U', 'victor': 'V', 'whiskey': 'W', 'xray': 'X',
+          'yankee': 'Y', 'zulu': 'Z', 'zero': '0', 'one': '1',
+          'two': '2', 'three': '3', 'four': '4', 'five': '5',
+          'six': '6', 'seven': '7', 'eight': '8', 'nine': '9', '0': '0', '1': '1',
+          '2': '2', '3': '3', '4': '4', '5': '5',
+          '6': '6', '7': '7', '8': '8', '9': '9', 'slash': '/'
+      };
+      const validInputs = [
+          'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 
+          '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'slash'
+      ];
+      let callSign = '';
+      const words = transcript.toLowerCase().split(' ');
+      words.forEach((word) => {
+          if (phoneticAlphabet[word]) {
+              callSign += phoneticAlphabet[word];
+          }
+      });
+      // const words = transcript.toLowerCase().split('');
+      // words.forEach((word) => {
+      //     if (validInputs.includes(word)) {
+      //         if (word === 'slash') {
+      //             callSign += '/';
+      //         } else {
+      //             callSign += word.toUpperCase();
+      //         }
+      //     }
+      // });
+      return callSign;
+  }
 
   return (
       <div>
