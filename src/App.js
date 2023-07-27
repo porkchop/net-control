@@ -20,7 +20,7 @@ function App() {
 
   const handleSearch = (event) => {
       setSearch(event.target.value);
-      const foundUser = users.find((user) => user.callSign.toLowerCase().includes(event.target.value.toLowerCase()));
+      const foundUser = users.find((user) => user.callSign.toUpperCase().includes(event.target.value.toUpperCase()));
       if(foundUser){
           setForm(foundUser);
       }
@@ -41,13 +41,13 @@ function App() {
   }
 
   const addUserHelper = (users, user, overwrite) => {
-    const existingUser = users.find((_user) => _user.callSign.toLowerCase() === user.callSign.toLowerCase());
+    const existingUser = users.find((_user) => _user.callSign.toUpperCase() === user.callSign.toUpperCase());
     if (existingUser && !overwrite && !window.confirm('This user already exists. Do you want to overwrite this user?')) {
         return;
     }
     const newUser = { ...user };
-    newUser.callSign = user.callSign.toLowerCase();
-    const newUsers = users.filter((_user) => _user.callSign.toLowerCase() !== user.callSign.toLowerCase());
+    newUser.callSign = user.callSign.toUpperCase();
+    const newUsers = users.filter((_user) => _user.callSign.toUpperCase() !== user.callSign.toUpperCase());
     newUsers.push(newUser);
     return newUsers;
   }
@@ -63,7 +63,7 @@ function App() {
   const removeUser = (callSign) => {
       const confirmation = window.confirm('Are you sure you want to delete this user?');
       if (confirmation) {
-        const newUsers = users.filter((user) => user.callSign.toLowerCase() !== callSign.toLowerCase());
+        const newUsers = users.filter((user) => user.callSign.toUpperCase() !== callSign.toUpperCase());
         setUsers(newUsers);
       }
       return confirmation;
@@ -71,7 +71,7 @@ function App() {
 
   const handleAddToList = (event) => {
       event.preventDefault();
-      if (form.callSign && !lists[currentList].find((user) => user.callSign.toLowerCase() === form.callSign.toLowerCase())) {
+      if (form.callSign && !lists[currentList].find((user) => user.callSign.toUpperCase() === form.callSign.toUpperCase())) {
           const newLists = { ...lists };
           newLists[currentList] = newLists[currentList] || [];
           newLists[currentList].push(form);
@@ -81,7 +81,7 @@ function App() {
 
   const handleRemoveFromList = (callSign) => {
       const newLists = { ...lists };
-      newLists[currentList] = newLists[currentList].filter((user) => user.callSign.toLowerCase() !== callSign.toLowerCase());
+      newLists[currentList] = newLists[currentList].filter((user) => user.callSign.toUpperCase() !== callSign.toUpperCase());
       setLists(newLists);
   };
 
@@ -155,13 +155,13 @@ function App() {
           '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'slash'
       ];
       let callSign = '';
-      const words = transcript.toLowerCase().split(' ');
+      const words = transcript.toUpperCase().split(' ');
       words.forEach((word) => {
           if (phoneticAlphabet[word]) {
               callSign += phoneticAlphabet[word];
           }
       });
-      // const words = transcript.toLowerCase().split('');
+      // const words = transcript.toUpperCase().split('');
       // words.forEach((word) => {
       //     if (validInputs.includes(word)) {
       //         if (word === 'slash') {
@@ -210,8 +210,8 @@ function App() {
                   <button type="button" onClick={handleAddToList} disabled={
                       (!currentList || 
                       !form.callSign || 
-                      users.findIndex((user) => user.callSign.toLowerCase() === form.callSign.toLowerCase()) === -1 ||
-                      lists[currentList].findIndex((user) => user.callSign.toLowerCase() === form.callSign.toLowerCase()) !== -1)
+                      users.findIndex((user) => user.callSign.toUpperCase() === form.callSign.toUpperCase()) === -1 ||
+                      lists[currentList].findIndex((user) => user.callSign.toUpperCase() === form.callSign.toUpperCase()) !== -1)
                   }>Add to List</button>
               </form>
           </div>
