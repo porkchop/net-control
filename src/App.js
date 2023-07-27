@@ -1,6 +1,7 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import Papa from 'papaparse';
 
 function App() {
   const [search, setSearch] = useState('');
@@ -32,16 +33,24 @@ function App() {
   const handleSubmit = (event) => {
       event.preventDefault();
       if (!form.callSign) return;
-      const existingUser = users.find((user) => user.callSign.toLowerCase() === form.callSign.toLowerCase());
-      if (existingUser && !window.confirm('This user already exists. Do you want to overwrite this user?')) {
-          return;
-      }
-      const newUser = { ...form };
-      const newUsers = users.filter((user) => user.callSign.toLowerCase() !== form.callSign.toLowerCase());
-      newUsers.push(newUser);
-      setUsers(newUsers);
-      setForm({ callSign: '', name: '', location: '', notes: '' });
+      addUser(form, false);
   };
+
+  const addUser = (user, overwrite) => {
+    setUsers(addUserHelper(users, user, overwrite));
+  }
+
+  const addUserHelper = (users, user, overwrite) => {
+    const existingUser = users.find((_user) => _user.callSign.toLowerCase() === user.callSign.toLowerCase());
+    if (existingUser && !overwrite && !window.confirm('This user already exists. Do you want to overwrite this user?')) {
+        return;
+    }
+    const newUser = { ...user };
+    newUser.callSign = user.callSign.toLowerCase();
+    const newUsers = users.filter((_user) => _user.callSign.toLowerCase() !== user.callSign.toLowerCase());
+    newUsers.push(newUser);
+    return newUsers;
+  }
 
   const handleDelete = (event) => {
       event.preventDefault();
@@ -159,6 +168,22 @@ function App() {
       return callSign;
   }
 
+  const [csvInput, setCsvInput] = useState('');
+
+  const handleCsvInputChange = (event) => {
+      setCsvInput(event.target.value);
+  }
+
+  const handleBatchAdd = () => {
+      const { data } = Papa.parse(csvInput, { header: true });
+      let newUsers = users;
+      data.forEach(user => {
+        newUsers = addUserHelper(newUsers, user, true)
+      });
+      setUsers(newUsers);
+      setCsvInput('');
+  };
+
   return (
       <div>
           <div>
@@ -209,6 +234,8 @@ function App() {
                   </div>
               ))}
           </div>
+          <textarea value={csvInput} onChange={handleCsvInputChange} />
+          <button onClick={handleBatchAdd}>Add users from CSV</button>
       </div>
   );
 }
