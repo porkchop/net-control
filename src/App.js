@@ -55,12 +55,18 @@ function App() {
   const handleDelete = (event) => {
       event.preventDefault();
       if (!form.callSign) return;
-      if (!window.confirm('Are you sure you want to delete this user?')) {
-          return;
+      if(removeUser(form.callSign)) {
+        setForm({ callSign: '', name: '', location: '', notes: '' });
       }
-      const newUsers = users.filter((user) => user.callSign.toLowerCase() !== form.callSign.toLowerCase());
-      setUsers(newUsers);
-      setForm({ callSign: '', name: '', location: '', notes: '' });
+  };
+
+  const removeUser = (callSign) => {
+      const confirmation = window.confirm('Are you sure you want to delete this user?');
+      if (confirmation) {
+        const newUsers = users.filter((user) => user.callSign.toLowerCase() !== callSign.toLowerCase());
+        setUsers(newUsers);
+      }
+      return confirmation;
   };
 
   const handleAddToList = (event) => {
@@ -228,9 +234,10 @@ function App() {
           </div>
           <div>
               <button onClick={() => setShowUsers(!showUsers)}>Show / Hide Users</button>
-              {showUsers && users.map((user) => (
+              {showUsers && users.map((user, index) => (
                   <div key={user.callSign}>
-                      {user.callSign} - {user.name} - {user.location} - {user.notes}
+                      {index+1}. {user.callSign} - {user.name} - {user.location} - {user.notes}
+                      <button onClick={() => removeUser(user.callSign)}>Remove</button>
                   </div>
               ))}
           </div>
