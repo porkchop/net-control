@@ -136,6 +136,19 @@ function App() {
       recognition.start();
   };
 
+  const exportUsersToCSV = () => {
+      const csv = Papa.unparse(users); // Convert users array to CSV string
+      const blob = new Blob([csv], { type: 'text/csv' }); // Create a Blob object with our CSV string
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); // Create an anchor element
+      a.href = url;
+      a.download = 'users.csv'; // Set the file name
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url); // Cleanup the URL
+  };
+
   const convertTranscriptToCallSign = (transcript) => {
       const phoneticAlphabet = {
           'alpha': 'A', 'bravo': 'B', 'charlie': 'C', 'delta': 'D',
@@ -243,6 +256,8 @@ function App() {
           </div>
           <textarea value={csvInput} onChange={handleCsvInputChange} />
           <button onClick={handleBatchAdd}>Add users from CSV</button>
+          <button onClick={exportUsersToCSV}>Export Users to CSV</button>
+
       </div>
   );
 }
